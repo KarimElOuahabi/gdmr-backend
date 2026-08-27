@@ -31,6 +31,14 @@ public class AuthController {
     @Value("${app.cookie.secure}")
     private boolean secureCookie;
 
+    // Frontend and backend live on different domains once deployed (e.g. Vercel + Render),
+    // which makes this a cross-site request — a SameSite=Strict cookie is never sent in that
+    // case. "None" is only valid (browsers require it) when Secure is also true, so this stays
+    // tied to the same flag that already distinguishes local dev from a real deployment.
+    private String cookieSameSite() {
+        return secureCookie ? "None" : "Strict";
+    }
+
     public AuthController(RegisterUserUseCase registerUserUseCase,
                           LoginUseCase loginUseCase,
                           RefreshAccessTokenUseCase refreshAccessTokenUseCase,
@@ -75,7 +83,7 @@ public class AuthController {
         ResponseCookie clearCookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(secureCookie)
-                .sameSite("Strict")
+                .sameSite(cookieSameSite())
                 .path("/api/auth")
                 .maxAge(0)
                 .build();
@@ -100,7 +108,7 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from("refreshToken", tokens.rawRefreshToken())
                 .httpOnly(true)
                 .secure(secureCookie)
-                .sameSite("Strict")
+                .sameSite(cookieSameSite())
                 .path("/api/auth")
                 .maxAge(Duration.ofDays(7))
                 .build();

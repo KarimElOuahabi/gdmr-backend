@@ -1,0 +1,25 @@
+# Render "Blueprint" — lets you deploy via New > Blueprint instead of
+# manually configuring the web service by hand.
+# DB_URL / DB_USERNAME / DB_PASSWORD / APP_CORS_ALLOWED_ORIGINS are left
+# unset here (sync: false) — set their real values in the Render dashboard
+# after the service is created, since they depend on your DB provider and
+# deployed frontend URL.
+services:
+  - type: web
+    name: gdmr-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: APP_CORS_ALLOWED_ORIGINS
+        sync: false
