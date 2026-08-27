@@ -5,7 +5,7 @@ ALTER TABLE visits ALTER COLUMN confirmed_date_time DROP NOT NULL;
 -- 2. Create the new table and index for employee-proposed slots
 CREATE TABLE visit_proposed_slots (
                                        id BIGSERIAL PRIMARY KEY,
-                                       visite_id BIGINT NOT NULL REFERENCES visits(id) ON DELETE CASCADE,
+                                       visit_id BIGINT NOT NULL REFERENCES visits(id) ON DELETE CASCADE,
                                        slot_date_time TIMESTAMP NOT NULL
 );
 
